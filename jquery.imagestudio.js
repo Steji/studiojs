@@ -137,11 +137,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         var tr = $('<tr></tr>').appendTo($('<table></table>').css('width', '100%').appendTo(div));
 
         //Add accordion
-        var atd = $('<td></td>').appendTo(tr);
-        var a = $("<div></div>").addClass("controls").width(opts.accordionWidth).appendTo(atd);
+        var a = $("#settingsPanel").addClass("controls").width(opts.accordionWidth);
 
         //Add image
-        var itd = $('<td></td>').addClass("imageCell").css('vertical-align', 'middle').css('text-align', 'center').css('padding-left', '10px').css('padding-right', '10px').appendTo(tr);
+        var itd = $('<td></td>').addClass("imageCell").css('vertical-align', 'middle').css('text-align', 'center').appendTo(tr);
         var idiv = $('<div></div>').css('text-align', 'center').appendTo(itd);
         var img = $('<img />').addClass("studioimage").appendTo(idiv);
         opts.img = img; //Save a reference to the image object in options
@@ -167,7 +166,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if (o.width) { div.width(o.width); }
             if (o.height) div.height(o.height);
             if (o.height) a.height(o.height);
-            if (o.accordionWidth) { a.width(o.accordionWidth); atd.width(o.accordionWidth); }
+            if (o.accordionWidth) { a.width(o.accordionWidth); }
 
             if (!skipUrlUpdate) {
                 opts.original = ImageResizer.Utils.parseUrl(opts.url);
@@ -266,7 +265,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     //Makes a button that edits the image's querystring.
     var button = function (opts, id, editCallback, clickCallback) {
         var icon = opts.icons[id];
-        var b = $('<button type="button"></button>').addClass('button_' + id).button({ label: opts.labels[id] ? opts.labels[id] : id, icons: icon != null ? { primary: "ui-icon-" + icon} : {} });
+        var b = $('<button type="button"></button>').addClass('button_' + id).addClass('btn').button({ label: opts.labels[id] ? opts.labels[id] : id, icons: icon != null ? { primary: "ui-icon-" + icon} : {} });
         if (editCallback) b.click(function () {
             edit(opts, function (obj) {
                 editCallback(obj);
@@ -279,10 +278,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var toggle = function (container, id, querystringKey, opts) {
         if (!window.uniqueId) window.uniqueId = (new Date()).getTime();
         window.uniqueId++;
-        var chk = $('<input type="checkbox" id="' + window.uniqueId + '" />');
+        var chk = $('<input type="checkbox" id="' + window.uniqueId + '" data-checkbox-noinit="true" />');
         chk.prop("checked", opts.editQuery.getBool(querystringKey));
         chk.appendTo(container);
-        $('<label for="' + window.uniqueId + '">' + opts.labels[id] + '</label>').appendTo(container);
+        $('<label for="' + window.uniqueId + '">' + opts.labels[id] + '</label>').addClass('btn').appendTo(container);
         chk.button({ icons: { primary: "ui-icon-" + opts.icons[id]} }).click(function () {
             edit(opts, function (obj) {
                 obj.toggle(querystringKey);
@@ -298,7 +297,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var slider = function (opts, min, max, step, key) {
         var supress = {};
         var startingValue = opts.editQuery[key]; if (startingValue == null) startingValue = 0;
-        var s = $("<div></div>").slider({ min: min, max: max, step: step, value: startingValue,
+        var s = $("<div></div>").slider({ min: min, max: max, step: step, value: startingValue, range: "min",
             change: function (event, ui) {
                 supress[key] = true;
                 edit(opts, function (obj) {
