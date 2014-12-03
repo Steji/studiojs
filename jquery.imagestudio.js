@@ -119,7 +119,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     result = div.data('ImageStudio');
                     return;
                 }
-                // Otherwise, we just reset the options...
+                    // Otherwise, we just reset the options...
                 else div.data('ImageStudio').setOptions(options);
             } else {
                 div.data('ImageStudio', init(div, processOptions(options)));
@@ -203,8 +203,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //Activate accordion
         //Animated can be true, false or a string
         var animated = opts.animated && ((opts.animated.toLowerCase() === 'true') ? true : (opts.animated.toLowerCase() === 'false') ? false : opts.animated);
-        a.accordion({ fillSpace: true, animated: animated});
-        
+        a.accordion({ fillSpace: true, animated: animated });
+
         var api = {
             getOptions: function () { return opts; },
             setOptions: function (newOpts) {
@@ -245,6 +245,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         callback(opts.editQuery);
         opts.editUrl = opts.editPath + opts.editQuery.toQueryString(opts.editWithSemicolons);
         setloading(opts, true, true);
+        
         opts.img.attr('src', opts.editUrl);
         if (opts.img.prop('complete')) setloading(opts, false);
         opts.img.triggerHandler('query', [opts.editQuery]);
@@ -265,7 +266,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     //Makes a button that edits the image's querystring.
     var button = function (opts, id, editCallback, clickCallback) {
         var icon = opts.icons[id];
-        var b = $('<button type="button"></button>').addClass('button_' + id).addClass('btn').button({ label: opts.labels[id] ? opts.labels[id] : id, icons: icon != null ? { primary: "ui-icon-" + icon} : {} });
+        var b = $('<button type="button"></button>').addClass('button_' + id).addClass('btn').button({ label: opts.labels[id] ? opts.labels[id] : id, icons: icon != null ? { primary: "ui-icon-" + icon } : {} });
         if (editCallback) b.click(function () {
             edit(opts, function (obj) {
                 editCallback(obj);
@@ -282,7 +283,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         chk.prop("checked", opts.editQuery.getBool(querystringKey));
         chk.appendTo(container);
         $('<label for="' + window.uniqueId + '">' + opts.labels[id] + '</label>').addClass('btn').appendTo(container);
-        chk.button({ icons: { primary: "ui-icon-" + opts.icons[id]} }).click(function () {
+        chk.button({ icons: { primary: "ui-icon-" + opts.icons[id] } }).click(function () {
             edit(opts, function (obj) {
                 obj.toggle(querystringKey);
             });
@@ -297,7 +298,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var slider = function (opts, min, max, step, key) {
         var supress = {};
         var startingValue = opts.editQuery[key]; if (startingValue == null) startingValue = 0;
-        var s = $("<div></div>").slider({ min: min, max: max, step: step, value: startingValue, range: "min",
+        var s = $("<div></div>").slider({
+            min: min, max: max, step: step, value: startingValue, range: "min",
             change: function (event, ui) {
                 supress[key] = true;
                 edit(opts, function (obj) {
@@ -355,12 +357,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
     };
 
-    var enableSiblingResetButton = function(btn)
-    {
+    var enableSiblingResetButton = function (btn) {
         $(btn).siblings(".button_reset").first().removeAttr("disabled");
     }
 
-    var disableResetButton = function(btn) {
+    var disableResetButton = function (btn) {
         $(btn).attr("disabled", "disabled");
     }
 
@@ -371,24 +372,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         var left = button(opts, 'rotateleft', function (obj) {
             obj.increment("srotate", -90, 360);
         });
-        left.click(function() {
+        left.click(function () {
             enableSiblingResetButton(this);
         });
         left.appendTo(c);
 
-        var right = button(opts, 'rotateright', function(obj) { obj.increment("srotate", 90, 360); });
+        var right = button(opts, 'rotateright', function (obj) { obj.increment("srotate", 90, 360); });
         right.click(function () {
             enableSiblingResetButton(this);
         });
         right.appendTo(c);
 
-        var vert = button(opts, 'flipvertical', function(obj) { obj.toggle("sflip.y"); });
+        var vert = button(opts, 'flipvertical', function (obj) { obj.toggle("sflip.y"); });
         vert.click(function () {
             enableSiblingResetButton(this);
         });
         vert.appendTo(c);
 
-        var horiz = button(opts, 'fliphorizontal', function(obj) { obj.toggle("sflip.x"); });
+        var horiz = button(opts, 'fliphorizontal', function (obj) { obj.toggle("sflip.x"); });
         horiz.click(function () {
             enableSiblingResetButton(this);
         });
@@ -397,7 +398,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         var reset = button(opts, 'reset', function (obj) {
             obj.resetSourceRotateFlip();
         }).attr("disabled", "disabled");
-        reset.click(function() {
+        reset.click(function () {
             disableResetButton(this);
         });
         reset.appendTo(c);
@@ -409,7 +410,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         var c = $('<div></div>');
 
         var auto = toggle(c, 'autowhite', "a.balancewhite", opts);
-        auto.change(function() {
+        auto.change(function () {
             enableSiblingResetButton(this);
         });
 
@@ -434,10 +435,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         });
         c.append(bri);
 
-        var reset = button(opts, 'reset', function(obj) {
+        var reset = button(opts, 'reset', function (obj) {
             obj.remove("s.contrast", "s.saturation", "s.brightness", "a.balancewhite");
         }).attr("disabled", "disabled");
-        reset.click(function() {
+        reset.click(function () {
             disableResetButton(this);
         });
         reset.appendTo(c);
@@ -498,7 +499,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         });
         c.append(blu);
 
-        var reset = button(opts, 'reset', function(obj) {
+        var reset = button(opts, 'reset', function (obj) {
             obj.remove("a.sharpen", "a.removenoise", "a.oilpainting", "a.posterize", "s.grayscale", "s.sepia", "s.invert", "a.blur", "a.radiusunits");
         }).attr("disabled", "disabled");
         reset.click(function () {
@@ -575,14 +576,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //Just remove carve.data to reset everything!
         var reset = button(opts, 'reset', function (obj) { obj.remove("carve.data"); }).appendTo(c);
         //Handle source image changes by exiting
-        opts.img.bind('sourceImageChanged', function () { if (cl.active) stopDrawing(false,true); });
+        opts.img.bind('sourceImageChanged', function () { if (cl.active) stopDrawing(false, true); });
         return c;
     };
     //Adds a pane for cropping
     var addCropPane = function (opts) {
         var c = $('<div></div>');
         //Pane-local closure
-        var cl = { img: opts.img,
+        var cl = {
+            img: opts.img,
             cropping: false,
             jcrop_reference: null,
             previousUrl: null,
@@ -591,46 +593,55 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         //Called once the 'uncropped' image has been loaded and its dimensions determined
         var startCrop = function (uncroppedWidth, uncroppedHeight, uncroppedUrl, oldCrop) {
+            
             //Use existing coords if present
             var coords = null;
             var cropObj = oldCrop;
             //Adjust for xunits/yunits
             if (cropObj && cropObj.allPresent()) coords = cropObj.stretchTo(uncroppedWidth, uncroppedHeight).toCoordsArray();
 
+            //force reload 
+            var url = cl.img.attr("src") + "&edit=" + (Math.random());
 
-            //Handle preview init/update
-            if (cl.opts.cropPreview) preview.JcropPreview({ jcropImg: cl.img });
-            preview.hide();
-            var update = function (coords) {
-                if (cl.opts.cropPreview) {
-                    preview.JcropPreviewUpdate(coords);
-                    preview.show();
+            $.ajax({
+                url: url,
+                success: function() {
+                    //Handle preview init/update
+                    //force request to server
+                    if (cl.opts.cropPreview) preview.JcropPreview({ jcropImg: cl.img.attr("src", url) });
+                    preview.hide();
+                    var update = function (coords) {
+                        if (cl.opts.cropPreview) {
+                            preview.JcropPreviewUpdate(coords);
+                            preview.show();
+                        }
+                    };
+
+                    cl.opts.imgDiv.css('padding-left', (cl.opts.imgDiv.width() - cl.img.width()) / 2 + 1);
+                    cl.opts.imgDiv.css('text-align', 'left');
+                    //Start up jCrop
+                    cl.img.Jcrop({
+                        onChange: update,
+                        onSelect: update,
+                        aspectRatio: getRatio(),
+                        bgColor: 'black',
+                        bgOpacity: 0.6
+                    }, function () {
+                        //Called when jCrop finishes loading
+                        cl.jcrop_reference = this;
+                        cl.opts.jcrop_reference = this;
+
+                        if (cl.opts.cropPreview) preview.JcropPreviewUpdate({ x: 0, y: 0, x2: uncroppedWidth, y2: uncroppedHeight, width: uncroppedWidth, height: uncroppedHeight });
+                        if (coords != null) this.setSelect(coords);
+
+                        //Show buttons
+                        $a([btnCancel, btnDone, label, ratio]).show();
+                        cl.cropping = true;
+                        setloading(opts, false);
+                    });
+
                 }
-            };
-
-            cl.opts.imgDiv.css('padding-left', (cl.opts.imgDiv.width() - cl.img.width()) / 2 + 1);
-            cl.opts.imgDiv.css('text-align', 'left');
-            //Start up jCrop
-            cl.img.Jcrop({
-                onChange: update,
-                onSelect: update,
-                aspectRatio: getRatio(),
-                bgColor: 'black',
-                bgOpacity: 0.6
-            }, function () {
-                //Called when jCrop finishes loading
-                cl.jcrop_reference = this;
-                cl.opts.jcrop_reference = this;
-
-                if (cl.opts.cropPreview) preview.JcropPreviewUpdate({ x: 0, y: 0, x2: uncroppedWidth, y2: uncroppedHeight, width: uncroppedWidth, height: uncroppedHeight });
-                if (coords != null) this.setSelect(coords);
-
-                //Show buttons
-                $a([btnCancel, btnDone, label, ratio]).show();
-                cl.cropping = true;
-                setloading(opts, false);
             });
-
         }
 
 
@@ -646,6 +657,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             } else if (!norestore) {
                 setUrl(cl.opts, cl.previousUrl);
             }
+            
             if (cl.jcrop_reference) {
                 cl.jcrop_reference.destroy();
                 delete cl.opts.jcrop_reference;
@@ -666,16 +678,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             $a([btnReset, btnCrop]).hide();
             lockAccordion(opts, c);
 
-
             //Save the original crop values and URL
             var oldCrop = cl.opts.editQuery.getCrop();
             cl.previousUrl = opts.editUrl;
-
+            
             //Create an uncropped URL
             var q = new ImageResizer.Instructions(cl.opts.editQuery);
             q.remove("crop", "cropxunits", "cropyunits");
             var uncroppedUrl = cl.opts.editPath + q.toQueryString(cl.opts.editWithSemicolons);
-
 
             var onLoadImage = function () {
                 var image = new Image();
@@ -811,6 +821,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         q.setRectArray(this.key, this.rects);
         q[this.origWidthKey] = this.info.ow;
         q[this.origHeightKey] = this.info.oh;
+        
         return this.opts.editPath + q.toQueryString(this.opts.editWithSemicolons);
     };
 
@@ -874,7 +885,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         var cr = clientrect;
         var r = rect;
         if (cr == null) {
-            cr = { x: (r.X - d.cropx) * (d.dw / d.cropw) - 1,
+            cr = {
+                x: (r.X - d.cropx) * (d.dw / d.cropw) - 1,
                 y: (r.Y - d.cropy) * (d.dh / d.croph) - 1,
                 w: (r.X2 - r.X) * (d.dw / d.cropw),
                 h: (r.Y2 - r.Y) * (d.dh / d.croph)
@@ -1045,4 +1057,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     };
 
 
-})(jQuery);  
+})(jQuery);
