@@ -602,44 +602,57 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             //force reload 
             var url = cl.img.attr("src") + "&edit=" + (Math.random());
+            
+            var successCallback = function() {
+                //Handle preview init/update
+                //force request to server
+                if (cl.opts.cropPreview) preview.JcropPreview({ jcropImg: cl.img.attr("src", url) });
+                preview.hide();
+                var update = function (coords) {
+                    if (cl.opts.cropPreview) {
+                        preview.JcropPreviewUpdate(coords);
+                        preview.show();
+                    }
+                };
+
+                cl.opts.imgDiv.css('padding-left', (cl.opts.imgDiv.width() - cl.img.width()) / 2 + 1);
+                cl.opts.imgDiv.css('text-align', 'left');
+                //Start up jCrop
+                cl.img.Jcrop({
+                    onChange: update,
+                    onSelect: update,
+                    aspectRatio: getRatio(),
+                    bgColor: 'black',
+                    bgOpacity: 0.6
+                }, function () {
+                    //Called when jCrop finishes loading
+                    cl.jcrop_reference = this;
+                    cl.opts.jcrop_reference = this;
+
+                    if (cl.opts.cropPreview) preview.JcropPreviewUpdate({ x: 0, y: 0, x2: uncroppedWidth, y2: uncroppedHeight, width: uncroppedWidth, height: uncroppedHeight });
+                    if (coords != null) this.setSelect(coords);
+
+                    //Show buttons
+                    $a([btnCancel, btnDone, label, ratio]).show();
+                    cl.cropping = true;
+                    setloading(opts, false);
+                });
+            }
 
             $.ajax({
                 url: url,
-                success: function() {
-                    //Handle preview init/update
-                    //force request to server
-                    if (cl.opts.cropPreview) preview.JcropPreview({ jcropImg: cl.img.attr("src", url) });
-                    preview.hide();
-                    var update = function (coords) {
-                        if (cl.opts.cropPreview) {
-                            preview.JcropPreviewUpdate(coords);
-                            preview.show();
-                        }
-                    };
-
-                    cl.opts.imgDiv.css('padding-left', (cl.opts.imgDiv.width() - cl.img.width()) / 2 + 1);
-                    cl.opts.imgDiv.css('text-align', 'left');
-                    //Start up jCrop
-                    cl.img.Jcrop({
-                        onChange: update,
-                        onSelect: update,
-                        aspectRatio: getRatio(),
-                        bgColor: 'black',
-                        bgOpacity: 0.6
-                    }, function () {
-                        //Called when jCrop finishes loading
-                        cl.jcrop_reference = this;
-                        cl.opts.jcrop_reference = this;
-
-                        if (cl.opts.cropPreview) preview.JcropPreviewUpdate({ x: 0, y: 0, x2: uncroppedWidth, y2: uncroppedHeight, width: uncroppedWidth, height: uncroppedHeight });
-                        if (coords != null) this.setSelect(coords);
-
-                        //Show buttons
-                        $a([btnCancel, btnDone, label, ratio]).show();
-                        cl.cropping = true;
-                        setloading(opts, false);
-                    });
-
+                dataType: "text",
+                contentType: "application/x-www-form-urlencoded",
+                async: false,
+                cache: false,
+                type: "GET",
+                error: function (xhr) {
+                    //ie9 hack
+                    if (xhr.status == 0)
+                        successCallback();
+                },
+                success: function () {
+                    successCallback();
                 }
             });
         }
@@ -699,12 +712,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             cl.img.attr('src', uncroppedUrl);
 
         }).appendTo(c);
+
         //Set up aspect ratio checkbox
         var label = h3(opts, 'aspectratio', c).hide();
-        var ratio = $("<select></select>");
+        var ratio = $("<select></select>").addClass("form-control").attr("id", "aspectRatio");
         var getRatio = function () {
-            return ratio.val() == "current" ? cl.img.width() / cl.img.height() : (ratio.val() == 0 ? null : ratio.val())
+            return ratio.val() == "current" ? cl.img.width() / cl.img.height() : (ratio.val() == 0 ? null : ratio.val());
         };
+
         var ratios = opts.cropratios;
         for (var i = 0; i < ratios.length; i++)
             $('<option value="' + ratios[i][0].toString() + '">' + ratios[i][1] + '</option>').appendTo(ratio);
@@ -726,10 +741,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             cl.jcrop_reference.focus();
         });
         var grouper = $('<div></div>').addClass('crop-active-buttons').appendTo(c);
-        var btnCancel = button(opts, 'crop_cancel', null, function () {
+        
+		var btnCancel = button(opts, 'crop_cancel', null, function () {
+			var dropdown = $("#aspectRatio");
+            dropdown.find("option").removeAttr("selected");
+            dropdown.find("option").first().attr("selected", "selected");
             stopCrop(false);
         }).appendTo(grouper).hide();
-        //Handle source image changes by exiting
+        
+		//Handle source image changes by exiting
         opts.img.bind('sourceImageChanged', function () { if (cl.cropping) stopCrop(false, true); });
 
         var btnDone = button(opts, 'crop_done', null, function () {
