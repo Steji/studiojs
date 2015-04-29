@@ -667,14 +667,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
         var stopCrop = function (save, norestore) {
-            if (!cl.cropping) return;
+            if (!cl.cropping)
+				return;
+				
             cl.cropping = false;
-            if (save) {
+            
+			if (save) {
                 setUrl(cl.opts, cl.previousUrl, true);
                 var coords = cl.jcrop_reference.tellSelect();
-                edit(cl.opts, function (obj) {
-                    obj.setCrop({ x1: coords.x, y1: coords.y, x2: coords.x2, y2: coords.y2, xunits: cl.img.width(), yunits: cl.img.height() });
-                });
+				
+				//only edit if they actually cropped something
+                if (coords.x > 0 || coords.y > 0 || coords.x2 > 0 || coords.y2 > 0 || coords.w > 0 || coords.h > 0) {
+                    edit(cl.opts, function (obj) {
+						obj.setCrop({ x1: coords.x, y1: coords.y, x2: coords.x2, y2: coords.y2, xunits: cl.img.width(), yunits: cl.img.height() });
+					});
+				}
             } else if (!norestore) {
                 setUrl(cl.opts, cl.previousUrl);
             }
@@ -683,6 +690,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 cl.jcrop_reference.destroy();
                 delete cl.opts.jcrop_reference;
             }
+			
             cl.img.attr('style', ''); //Needed to fix all the junk JCrop added.
             cl.opts.imgDiv.css('padding-left', 0); //undo horizontal align fix
             cl.opts.imgDiv.css('text-align', 'center');
