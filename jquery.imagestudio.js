@@ -605,8 +605,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             
             var successCallback = function() {
                 //Handle preview init/update
-                //force request to server
-                if (cl.opts.cropPreview) preview.JcropPreview({ jcropImg: cl.img.attr("src", url) });
+				if (cl.opts.cropPreview) 
+					preview.JcropPreview({ jcropImg: cl.img.attr("src", url) });
+					
                 preview.hide();
                 var update = function (coords) {
                     if (cl.opts.cropPreview) {
@@ -617,28 +618,35 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
                 cl.opts.imgDiv.css('padding-left', (cl.opts.imgDiv.width() - cl.img.width()) / 2 + 1);
                 cl.opts.imgDiv.css('text-align', 'left');
+				
                 //Start up jCrop
-                cl.img.Jcrop({
-                    onChange: update,
-                    onSelect: update,
-                    aspectRatio: getRatio(),
-                    bgColor: 'black',
-                    bgOpacity: 0.6
-                }, function () {
-                    //Called when jCrop finishes loading
-                    cl.jcrop_reference = this;
-                    cl.opts.jcrop_reference = this;
+				cl.img.one("load", function() {
+					cl.img.Jcrop({
+						onChange: update,
+						onSelect: update,
+						aspectRatio: getRatio(),
+						bgColor: 'black',
+						bgOpacity: 0.6
+					}, function () {
+						//Called when jCrop finishes loading
+						cl.jcrop_reference = this;
+						cl.opts.jcrop_reference = this;
 
-                    if (cl.opts.cropPreview) preview.JcropPreviewUpdate({ x: 0, y: 0, x2: uncroppedWidth, y2: uncroppedHeight, width: uncroppedWidth, height: uncroppedHeight });
-                    if (coords != null) this.setSelect(coords);
+						if (cl.opts.cropPreview) 
+							preview.JcropPreviewUpdate({ x: 0, y: 0, x2: uncroppedWidth, y2: uncroppedHeight, width: uncroppedWidth, height: uncroppedHeight });
+							
+						if (coords != null) 
+							this.setSelect(coords);
 
-                    //Show buttons
-                    $a([btnCancel, btnDone, label, ratio]).show();
-                    cl.cropping = true;
-                    setloading(opts, false);
-                });
+						//Show buttons
+						$a([btnCancel, btnDone, label, ratio]).show();
+						cl.cropping = true;
+						setloading(opts, false);
+					});
+				});
             }
 
+			//force request to server
             $.ajax({
                 url: url,
                 dataType: "text",
