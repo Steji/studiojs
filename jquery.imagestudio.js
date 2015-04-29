@@ -612,7 +612,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 var update = function (coords) {
                     if (cl.opts.cropPreview) {
                         preview.JcropPreviewUpdate(coords);
-                        preview.show();
+                        
+						//preview stops updating if the user just clicks the screen, selecting no pixels so hide it
+                        if (coords.w > 0)
+                            preview.show();
+                        else
+                            preview.hide();
                     }
                 };
 
