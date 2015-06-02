@@ -35,7 +35,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         editingCommands: { cache: 'no', scache: 'mem' },
         onchange: null, //The callback to fire whenever an edit occurs.
         cropratios: [[0, "Custom"], ["current", "Current"], [4 / 3, "4:3"], [16 / 9, "16:9 (Widescreen)"], [3 / 2, "3:2"]],
-        cropPreview: { width: '175px', height: '175px', 'margin-left': '-15px' },
+        cropPreview: { width: '162px', height: '162px', 'margin-left': '0px' },
         icons: {
             rotateleft: 'arrowreturnthick-1-w',
             rotateright: 'arrowreturnthick-1-e',
